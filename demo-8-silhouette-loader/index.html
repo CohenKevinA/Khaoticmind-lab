@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 8: Silhouette Fill — Khaoticmind Lab</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+  }
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 2rem;
+  }
+  h1 { color: #39ff14; font-size: 2rem; letter-spacing: 2px; margin: 0; }
+  p { color: #888; margin: 0; }
+  button {
+    margin-top: 1.5rem;
+    background: none;
+    border: 1px solid #39ff14;
+    color: #39ff14;
+    padding: 0.6rem 1.4rem;
+    border-radius: 6px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  #preloader {
+    position: fixed;
+    inset: 0;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    gap: 1rem;
+    transition: opacity 0.5s ease;
+  }
+  #preloader.hide { opacity: 0; pointer-events: none; }
+  #preloader .label {
+    color: #666;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+
+  .silhouette-wrap {
+    position: relative;
+    width: 140px;
+    height: 220px;
+  }
+  .silhouette-outline,
+  .silhouette-fill {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .silhouette-outline {
+    fill: none;
+    stroke: #333;
+    stroke-width: 2;
+  }
+  .silhouette-fill {
+    fill: #39ff14;
+    /* clip-path rect grows upward as loading progresses */
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 1.6s ease;
+  }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="silhouette-wrap">
+    <svg class="silhouette-outline" viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50,10 C58,10 64,16 64,24 C64,32 58,38 50,38 C42,38 36,32 36,24 C36,16 42,10 50,10 Z
+               M50,42 C68,42 78,54 78,72 L78,110 C78,116 74,120 68,120 L68,150 C68,155 64,158 60,158
+               L40,158 C36,158 32,155 32,150 L32,120 L22,120 C16,120 12,116 12,110 L12,72
+               C12,54 32,42 50,42 Z" />
+    </svg>
+    <svg class="silhouette-fill" viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50,10 C58,10 64,16 64,24 C64,32 58,38 50,38 C42,38 36,32 36,24 C36,16 42,10 50,10 Z
+               M50,42 C68,42 78,54 78,72 L78,110 C78,116 74,120 68,120 L68,150 C68,155 64,158 60,158
+               L40,158 C36,158 32,155 32,150 L32,120 L22,120 C16,120 12,116 12,110 L12,72
+               C12,54 32,42 50,42 Z" />
+    </svg>
+  </div>
+  <div class="label">loading...</div>
+</div>
+
+<div class="page">
+  <h1>PAGE LOADED</h1>
+  <p>demo 8 // silhouette fills from the bottom up as it loads</p>
+  <button id="replay">Replay Loading Sequence</button>
+</div>
+
+<script>
+  const preloader = document.getElementById('preloader');
+  const fill = preloader.querySelector('.silhouette-fill');
+  const replayBtn = document.getElementById('replay');
+
+  function playPreloader() {
+    preloader.classList.remove('hide');
+
+    // Reset to empty instantly (no transition), then re-enable and fill
+    fill.style.transition = 'none';
+    fill.style.clipPath = 'inset(100% 0 0 0)';
+    void fill.getBoundingClientRect(); // force reflow
+
+    fill.style.transition = 'clip-path 1.6s ease';
+    fill.style.clipPath = 'inset(0% 0 0 0)';
+
+    setTimeout(() => {
+      preloader.classList.add('hide');
+    }, 1900);
+  }
+
+  window.addEventListener('DOMContentLoaded', playPreloader);
+  replayBtn.addEventListener('click', playPreloader);
+</script>
+
+</body>
+</html>
