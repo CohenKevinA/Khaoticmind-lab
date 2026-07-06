@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 7: Tree Loader — Khaoticmind Lab</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+  }
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 2rem;
+  }
+  h1 { color: #39ff14; font-size: 2rem; letter-spacing: 2px; margin: 0; }
+  p { color: #888; margin: 0; }
+  button {
+    margin-top: 1.5rem;
+    background: none;
+    border: 1px solid #39ff14;
+    color: #39ff14;
+    padding: 0.6rem 1.4rem;
+    border-radius: 6px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  #preloader {
+    position: fixed;
+    inset: 0;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    gap: 1rem;
+    transition: opacity 0.5s ease;
+  }
+  #preloader.hide { opacity: 0; pointer-events: none; }
+  #preloader .label {
+    color: #666;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+
+  .tree-path {
+    fill: none;
+    stroke: #39ff14;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <svg width="200" height="220" viewBox="0 0 200 220">
+    <!-- Trunk -->
+    <path id="trunk" class="tree-path" d="M100,210 L100,120" />
+    <!-- Branches, drawn after the trunk -->
+    <path class="tree-path branch" data-delay="0"   d="M100,150 L60,110" />
+    <path class="tree-path branch" data-delay="80"  d="M100,150 L140,110" />
+    <path class="tree-path branch" data-delay="160" d="M100,125 L75,75" />
+    <path class="tree-path branch" data-delay="240" d="M100,125 L125,75" />
+    <path class="tree-path branch" data-delay="320" d="M100,120 L100,60" />
+    <path class="tree-path branch" data-delay="400" d="M60,110  L35,85" />
+    <path class="tree-path branch" data-delay="400" d="M140,110 L165,85" />
+  </svg>
+  <div class="label">growing...</div>
+</div>
+
+<div class="page">
+  <h1>PAGE LOADED</h1>
+  <p>demo 7 // tree grows in place of a progress bar</p>
+  <button id="replay">Replay Loading Sequence</button>
+</div>
+
+<script>
+  const preloader = document.getElementById('preloader');
+  const trunk = document.getElementById('trunk');
+  const branches = document.querySelectorAll('.branch');
+  const replayBtn = document.getElementById('replay');
+
+  function setupPath(path) {
+    const length = path.getTotalLength();
+    path.style.transition = 'none';
+    path.style.strokeDasharray = length;
+    path.style.strokeDashoffset = length;
+    void path.offsetWidth; // force reflow so the reset applies instantly
+  }
+
+  function drawPath(path, duration) {
+    path.style.transition = `stroke-dashoffset ${duration}ms ease`;
+    path.style.strokeDashoffset = '0';
+  }
+
+  function playPreloader() {
+    preloader.classList.remove('hide');
+
+    // Reset everything to undrawn state first
+    setupPath(trunk);
+    branches.forEach(setupPath);
+
+    // Draw the trunk first
+    requestAnimationFrame(() => {
+      drawPath(trunk, 500);
+
+      // Then each branch, staggered by its own delay
+      branches.forEach(branch => {
+        const delay = parseInt(branch.dataset.delay, 10) + 400; // wait for trunk to mostly finish
+        setTimeout(() => drawPath(branch, 350), delay);
+      });
+    });
+
+    setTimeout(() => {
+      preloader.classList.add('hide');
+    }, 1900);
+  }
+
+  window.addEventListener('DOMContentLoaded', playPreloader);
+  replayBtn.addEventListener('click', playPreloader);
+</script>
+
+</body>
+</html>
