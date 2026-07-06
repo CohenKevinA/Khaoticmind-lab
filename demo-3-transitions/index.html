@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 3: Transitions — Home</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0a0a0a;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+  }
+  .page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  h1 { color: #39ff14; font-size: 2rem; letter-spacing: 2px; margin: 0; }
+  p { color: #888; margin: 0; }
+  nav a {
+    color: #39ff14;
+    text-decoration: none;
+    border: 1px solid #39ff14;
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+  }
+  nav a:hover { background: rgba(57,255,20,0.1); }
+
+  #transition-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 1;
+    pointer-events: none;
+  }
+  #transition-overlay .mark {
+    color: #39ff14;
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1>HOME</h1>
+  <p>demo 3 // page transition test</p>
+  <nav><a href="gallery/index.html" data-transition>Go to Gallery →</a></nav>
+</div>
+
+<div id="transition-overlay"><div class="mark">KM</div></div>
+
+<script>
+  const overlay = document.getElementById('transition-overlay');
+  const mark = overlay.querySelector('.mark');
+
+  // Entry animation: fade the overlay away to reveal the page
+  window.addEventListener('DOMContentLoaded', () => {
+    mark.style.transition = 'opacity 0.25s ease';
+    mark.style.opacity = '1';
+    setTimeout(() => {
+      overlay.style.transition = 'opacity 0.35s ease';
+      overlay.style.opacity = '0';
+      setTimeout(() => { overlay.style.pointerEvents = 'none'; }, 350);
+    }, 250);
+  });
+
+  // Exit animation: fade to black + flash logo, then navigate
+  document.querySelectorAll('[data-transition]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const dest = link.getAttribute('href');
+      overlay.style.pointerEvents = 'all';
+      overlay.style.transition = 'opacity 0.3s ease';
+      overlay.style.opacity = '1';
+      mark.style.opacity = '0';
+      setTimeout(() => {
+        mark.style.transition = 'opacity 0.2s ease';
+        mark.style.opacity = '1';
+      }, 300);
+      setTimeout(() => { window.location.href = dest; }, 650);
+    });
+  });
+</script>
+
+</body>
+</html>
