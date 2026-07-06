@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 9: 3D Tilt — Khaoticmind Lab</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+  }
+  header { padding: 4rem 1.5rem 2rem; text-align: center; }
+  header h1 { color: #39ff14; font-size: 2rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+  header p { color: #888; font-size: 0.9rem; }
+
+  .grid {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2.5rem;
+    perspective: 1000px;
+  }
+  .tilt-card {
+    background: #141414;
+    border: 1px solid #262626;
+    border-radius: 12px;
+    padding: 2rem;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out, box-shadow 0.2s ease;
+    will-change: transform;
+  }
+  .tilt-card h2 {
+    color: #39ff14;
+    margin-top: 0;
+    font-size: 1.1rem;
+    transform: translateZ(30px);
+  }
+  .tilt-card p {
+    color: #999;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+    transform: translateZ(20px);
+  }
+  .tilt-card.hovering {
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  }
+  footer { text-align: center; color: #555; padding: 2rem 1rem 4rem; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>3D TILT ON HOVER</h1>
+  <p>demo 9 // move your cursor across a card to feel the tilt (desktop only)</p>
+</header>
+
+<div class="grid">
+  <div class="tilt-card">
+    <h2>Card One</h2>
+    <p>Tilts toward your cursor based on where it sits over the card — top-left feels different from bottom-right.</p>
+  </div>
+  <div class="tilt-card">
+    <h2>Card Two</h2>
+    <p>The inner content lifts slightly above the card surface using translateZ, adding a subtle layered depth.</p>
+  </div>
+  <div class="tilt-card">
+    <h2>Card Three</h2>
+    <p>This works well for feature cards or portfolio pieces — gives things a tactile, "physical" feel on hover.</p>
+  </div>
+</div>
+
+<footer>khaoticmind lab — demo 9</footer>
+
+<script>
+  const cards = document.querySelectorAll('.tilt-card');
+  const isTouch = window.matchMedia('(hover: none)').matches;
+
+  if (!isTouch) {
+    cards.forEach(card => {
+      const maxTilt = 12; // degrees
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateY = ((x - centerX) / centerX) * maxTilt;
+        const rotateX = -((y - centerY) / centerY) * maxTilt;
+
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+        card.classList.add('hovering');
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+        card.classList.remove('hovering');
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
