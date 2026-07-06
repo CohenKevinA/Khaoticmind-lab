@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 5: Zoom Lightbox — Khaoticmind Lab</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+  }
+  header { padding: 4rem 1.5rem 2rem; text-align: center; }
+  header h1 { color: #39ff14; font-size: 2rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+  header p { color: #888; font-size: 0.9rem; }
+
+  .grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .thumb {
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: zoom-in;
+    border: 1px solid #262626;
+  }
+  .thumb img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  .thumb:hover img { transform: scale(1.05); }
+
+  #lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  #lightbox.open { opacity: 1; pointer-events: all; }
+  #lightbox img {
+    max-width: 85vw;
+    max-height: 85vh;
+    border-radius: 6px;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    cursor: zoom-out;
+  }
+  #lightbox.open img { transform: scale(1); }
+  #lightbox .close {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    color: #39ff14;
+    font-size: 1.8rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  footer { text-align: center; color: #555; padding: 2rem 1rem 4rem; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CLICK TO ZOOM</h1>
+  <p>demo 5 // lightbox — click a thumbnail to open, click image or X to close</p>
+</header>
+
+<div class="grid">
+  <div class="thumb"><img src="https://picsum.photos/seed/zoom1/700/600" alt="thumb"></div>
+  <div class="thumb"><img src="https://picsum.photos/seed/zoom2/700/600" alt="thumb"></div>
+  <div class="thumb"><img src="https://picsum.photos/seed/zoom3/700/600" alt="thumb"></div>
+  <div class="thumb"><img src="https://picsum.photos/seed/zoom4/700/600" alt="thumb"></div>
+  <div class="thumb"><img src="https://picsum.photos/seed/zoom5/700/600" alt="thumb"></div>
+  <div class="thumb"><img src="https://picsum.photos/seed/zoom6/700/600" alt="thumb"></div>
+</div>
+
+<footer>khaoticmind lab — demo 5</footer>
+
+<div id="lightbox">
+  <button class="close">&times;</button>
+  <img src="" alt="zoomed">
+</div>
+
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+  const closeBtn = lightbox.querySelector('.close');
+
+  document.querySelectorAll('.thumb img').forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      lightboxImg.src = thumb.src.replace('/700/600', '/1400/1100');
+      lightbox.classList.add('open');
+    });
+  });
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+  }
+
+  closeBtn.addEventListener('click', closeLightbox);
+  lightboxImg.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+
+</body>
+</html>
