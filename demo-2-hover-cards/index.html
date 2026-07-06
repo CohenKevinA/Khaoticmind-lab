@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 2: Hover Cards — Khaoticmind Lab</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+  }
+  header {
+    padding: 4rem 1.5rem 2rem;
+    text-align: center;
+  }
+  header h1 {
+    color: #39ff14;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+  header p {
+    color: #888;
+    font-size: 0.9rem;
+  }
+  .grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+  .card {
+    position: relative;
+    background: #141414;
+    border: 1px solid #262626;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .card.active {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    animation: pulse-glow 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { border-color: #262626; }
+    50% { border-color: #39ff14; }
+  }
+  .frame {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+  }
+  .frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+  .card.active .frame img {
+    transform: scale(1.12);
+  }
+  .caption {
+    padding: 1rem 1.2rem;
+  }
+  .caption h2 {
+    margin: 0 0 0.3rem;
+    font-size: 1rem;
+    color: #39ff14;
+  }
+  .caption p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #888;
+  }
+  footer {
+    text-align: center;
+    color: #555;
+    padding: 2rem 1rem 4rem;
+    font-size: 0.8rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>HOVER TO REVEAL</h1>
+  <p>demo 2 // lift + zoom + pulse (hover on desktop, tap on mobile)</p>
+</header>
+
+<div class="grid">
+  <div class="card">
+    <div class="frame"><img src="https://picsum.photos/seed/reunion1/600/500" alt="placeholder"></div>
+    <div class="caption"><h2>Frame One</h2><p>hover or tap to activate</p></div>
+  </div>
+  <div class="card">
+    <div class="frame"><img src="https://picsum.photos/seed/reunion2/600/500" alt="placeholder"></div>
+    <div class="caption"><h2>Frame Two</h2><p>hover or tap to activate</p></div>
+  </div>
+  <div class="card">
+    <div class="frame"><img src="https://picsum.photos/seed/reunion3/600/500" alt="placeholder"></div>
+    <div class="caption"><h2>Frame Three</h2><p>hover or tap to activate</p></div>
+  </div>
+  <div class="card">
+    <div class="frame"><img src="https://picsum.photos/seed/reunion4/600/500" alt="placeholder"></div>
+    <div class="caption"><h2>Frame Four</h2><p>hover or tap to activate</p></div>
+  </div>
+</div>
+
+<footer>khaoticmind lab — demo 2</footer>
+
+<script>
+  const cards = document.querySelectorAll('.card');
+  const isTouch = window.matchMedia('(hover: none)').matches;
+
+  cards.forEach(card => {
+    if (isTouch) {
+      // Mobile: tap toggles the effect
+      card.addEventListener('click', () => {
+        cards.forEach(c => { if (c !== card) c.classList.remove('active'); });
+        card.classList.toggle('active');
+      });
+    } else {
+      // Desktop: hover in/out
+      card.addEventListener('mouseenter', () => card.classList.add('active'));
+      card.addEventListener('mouseleave', () => card.classList.remove('active'));
+    }
+  });
+</script>
+
+</body>
+</html>
