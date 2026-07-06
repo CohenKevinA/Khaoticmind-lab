@@ -25,7 +25,24 @@
     gap: 2.5rem;
     perspective: 1000px;
   }
+  .tilt-wrap {
+    position: relative;
+  }
+  .glow {
+    position: absolute;
+    inset: -30px;
+    border-radius: 20px;
+    background: radial-gradient(circle at 50% 50%, rgba(57,255,20,0.35), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    filter: blur(10px);
+    z-index: 0;
+  }
+  .glow.active { opacity: 1; }
   .tilt-card {
+    position: relative;
+    z-index: 1;
     background: #141414;
     border: 1px solid #262626;
     border-radius: 12px;
@@ -61,32 +78,43 @@
 </header>
 
 <div class="grid">
-  <div class="tilt-card">
-    <h2>Card One</h2>
-    <p>Tilts toward your cursor based on where it sits over the card — top-left feels different from bottom-right.</p>
+  <div class="tilt-wrap">
+    <div class="glow"></div>
+    <div class="tilt-card">
+      <h2>Card One</h2>
+      <p>Tilts toward your cursor based on where it sits over the card — top-left feels different from bottom-right.</p>
+    </div>
   </div>
-  <div class="tilt-card">
-    <h2>Card Two</h2>
-    <p>The inner content lifts slightly above the card surface using translateZ, adding a subtle layered depth.</p>
+  <div class="tilt-wrap">
+    <div class="glow"></div>
+    <div class="tilt-card">
+      <h2>Card Two</h2>
+      <p>The inner content lifts slightly above the card surface using translateZ, adding a subtle layered depth.</p>
+    </div>
   </div>
-  <div class="tilt-card">
-    <h2>Card Three</h2>
-    <p>This works well for feature cards or portfolio pieces — gives things a tactile, "physical" feel on hover.</p>
+  <div class="tilt-wrap">
+    <div class="glow"></div>
+    <div class="tilt-card">
+      <h2>Card Three</h2>
+      <p>This works well for feature cards or portfolio pieces — gives things a tactile, "physical" feel on hover.</p>
+    </div>
   </div>
 </div>
 
 <footer>khaoticmind lab — demo 9</footer>
 
 <script>
-  const cards = document.querySelectorAll('.tilt-card');
+  const wraps = document.querySelectorAll('.tilt-wrap');
   const isTouch = window.matchMedia('(hover: none)').matches;
 
   if (!isTouch) {
-    cards.forEach(card => {
+    wraps.forEach(wrap => {
+      const card = wrap.querySelector('.tilt-card');
+      const glow = wrap.querySelector('.glow');
       const maxTilt = 12; // degrees
 
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
+      wrap.addEventListener('mousemove', (e) => {
+        const rect = wrap.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         const centerX = rect.width / 2;
@@ -97,11 +125,18 @@
 
         card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
         card.classList.add('hovering');
+
+        // Light follows the same cursor position, as a percentage across the card
+        const xPercent = (x / rect.width) * 100;
+        const yPercent = (y / rect.height) * 100;
+        glow.style.background = `radial-gradient(circle at ${xPercent}% ${yPercent}%, rgba(57,255,20,0.45), transparent 60%)`;
+        glow.classList.add('active');
       });
 
-      card.addEventListener('mouseleave', () => {
+      wrap.addEventListener('mouseleave', () => {
         card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
         card.classList.remove('hovering');
+        glow.classList.remove('active');
       });
     });
   }
