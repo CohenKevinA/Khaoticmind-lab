@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 4: Parallax — Khaoticmind Lab</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+  }
+  header {
+    padding: 3rem 1.5rem;
+    text-align: center;
+  }
+  header h1 { color: #39ff14; font-size: 2rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+  header p { color: #888; font-size: 0.9rem; }
+
+  .parallax-section {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .parallax-bg {
+    position: absolute;
+    top: -20%;
+    left: 0;
+    width: 100%;
+    height: 140%;
+    background-size: cover;
+    background-position: center;
+    will-change: transform;
+  }
+  .parallax-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    background: rgba(0,0,0,0.45);
+    padding: 2rem 3rem;
+    border-radius: 8px;
+  }
+  .parallax-content h2 {
+    color: #39ff14;
+    font-size: 2.2rem;
+    margin: 0 0 0.5rem;
+    letter-spacing: 2px;
+  }
+  .parallax-content p {
+    color: #ccc;
+    margin: 0;
+  }
+  .spacer {
+    height: 20vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PARALLAX DEPTH</h1>
+  <p>demo 4 // dramatic — background moves at half scroll speed</p>
+</header>
+
+<div class="spacer">↓ scroll down ↓</div>
+
+<div class="parallax-section" data-speed="0.5">
+  <div class="parallax-bg" style="background-image: url('https://picsum.photos/seed/parallax1/1600/1200');"></div>
+  <div class="parallax-content">
+    <h2>Section One</h2>
+    <p>watch the background drift slower than this text as you scroll</p>
+  </div>
+</div>
+
+<div class="spacer">↓ keep scrolling ↓</div>
+
+<div class="parallax-section" data-speed="0.5">
+  <div class="parallax-bg" style="background-image: url('https://picsum.photos/seed/parallax2/1600/1200');"></div>
+  <div class="parallax-content">
+    <h2>Section Two</h2>
+    <p>same effect, repeated — this is how a hero section would feel</p>
+  </div>
+</div>
+
+<div class="spacer">end of demo</div>
+
+<script>
+  const sections = document.querySelectorAll('.parallax-section');
+
+  function updateParallax() {
+    sections.forEach(section => {
+      const speed = parseFloat(section.dataset.speed);
+      const rect = section.getBoundingClientRect();
+      const bg = section.querySelector('.parallax-bg');
+      // Offset based on how far the section has scrolled through the viewport
+      const offset = rect.top * speed;
+      bg.style.transform = `translateY(${offset}px)`;
+    });
+  }
+
+  window.addEventListener('scroll', updateParallax);
+  window.addEventListener('resize', updateParallax);
+  updateParallax();
+</script>
+
+</body>
+</html>
