@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 6: Loading Intro — Khaoticmind Lab</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+  }
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 2rem;
+  }
+  h1 { color: #39ff14; font-size: 2rem; letter-spacing: 2px; margin: 0; }
+  p { color: #888; margin: 0; }
+  button {
+    margin-top: 1.5rem;
+    background: none;
+    border: 1px solid #39ff14;
+    color: #39ff14;
+    padding: 0.6rem 1.4rem;
+    border-radius: 6px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  #preloader {
+    position: fixed;
+    inset: 0;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    gap: 1.5rem;
+    transition: opacity 0.5s ease;
+  }
+  #preloader .logo {
+    color: #39ff14;
+    font-size: 2.2rem;
+    letter-spacing: 4px;
+  }
+  #preloader .bar-track {
+    width: 220px;
+    height: 3px;
+    background: #222;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  #preloader .bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #39ff14;
+    transition: width 1.4s ease;
+  }
+  #preloader.hide { opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="logo">KM</div>
+  <div class="bar-track"><div class="bar-fill"></div></div>
+</div>
+
+<div class="page">
+  <h1>PAGE LOADED</h1>
+  <p>demo 6 // branded preloader plays once on entry</p>
+  <button id="replay">Replay Loading Sequence</button>
+</div>
+
+<script>
+  const preloader = document.getElementById('preloader');
+  const barFill = preloader.querySelector('.bar-fill');
+  const replayBtn = document.getElementById('replay');
+
+  function playPreloader() {
+    preloader.classList.remove('hide');
+    barFill.style.width = '0%';
+    // Kick the fill on next frame so the transition actually plays
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        barFill.style.width = '100%';
+      });
+    });
+    setTimeout(() => {
+      preloader.classList.add('hide');
+    }, 1600);
+  }
+
+  window.addEventListener('DOMContentLoaded', playPreloader);
+  replayBtn.addEventListener('click', playPreloader);
+</script>
+
+</body>
+</html>
